@@ -45,6 +45,7 @@ Configuration is conversational: current task, allowed scope, consent, and recal
 
 ```sh
 python3 tests/check.py
+python3 -m unittest discover -s tests -v
 # Optional: validate a fresh model's decision report against the fictional cases
 python3 tests/check.py /path/to/model-report.json
 ```
@@ -52,6 +53,8 @@ python3 tests/check.py /path/to/model-report.json
 The structural check is not a model behavior test. A fresh model should read `SKILL.md` and `tests/cases.json` and return a JSON object mapping each case ID to its chosen action and a reason, without tools or writes. See [validation record](VALIDATION.md). Finite synthetic cases do not prove production reliability, automatic Skill discovery, or privacy guarantees. Semantic judgments, prompt-injection resistance, and information freshness depend on the host/model. This policy is not an access-control sandbox.
 
 ## Safety and contribution
+
+Checker errors use generic diagnostics without echoing report paths or raw exception details. Subprocess regressions check invalid and valid fictional reports; they do not evaluate a model.
 
 Read [SECURITY.md](SECURITY.md). Do not publish your real goals, memories, transcripts, host logs, or authentication configuration in issues. Submit a redacted fictional failure case and the expected decision. Keep changes narrow and rerun the checks. The release contains original instructions and fictional data only. [Changelog](CHANGELOG.md), [MIT license](LICENSE), and [bilingual launch drafts](LAUNCH.md).
 

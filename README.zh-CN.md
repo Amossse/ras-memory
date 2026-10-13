@@ -8,6 +8,8 @@ RAS 与觉醒、注意有关。本项目借鉴这一作用设计记忆筛选策�
 
 ## 安装与试用
 
+检查器失败时只输出通用排查提示，不打印报告路径或原始异常详情。新增回归使用虚构报告，不代表模型行为已验证。
+
 仓库目录就是 Skill，入口为 `SKILL.md`。没有运行依赖、后台服务或内置数据库，采用 [Agent Skills 格式](https://agentskills.io/specification)。支持该格式的宿主可以加载；不同宿主的自动发现机制尚未全部验证。
 
 ```sh
@@ -47,6 +49,7 @@ RAS Memory 负责记忆决策，底层存储可以复用 [Agent Mem](https://git
 
 ```sh
 python3 tests/check.py
+python3 -m unittest discover -s tests -v
 python3 tests/check.py /path/to/model-report.json
 ```
 

@@ -1,0 +1,35 @@
+"""Fictional checker inputs; no model calls or memory writes."""
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import unittest
+
+import check
+
+
+class CheckerDiagnostics(unittest.TestCase):
+    def test_failures_do_not_echo_paths_or_tracebacks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "fictional-private-marker.json"
+            for payload in (None, "[" * 5000 + "]" * 5000, "{broken"):
+                with self.subTest(payload=payload is None):
+                    if payload is not None:
+                        path.write_text(payload, encoding="utf-8")
+                    result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)],
+                                            capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertNotIn("fictional-private-marker", result.stderr)
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertIn("FAIL:", result.stderr)
+
+    def test_valid_fictional_decisions_still_pass(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text(json.dumps({key: {"action": action, "reason": "fictional reason"}
+                                        for key, action in check.EXPECTED.items()}), encoding="utf-8")
+            result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("10 model decisions", result.stdout)

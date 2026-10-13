@@ -64,6 +64,6 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except (OSError, ValueError, KeyError, TypeError) as error:
-        print(f"FAIL: {error}", file=sys.stderr)
+    except (OSError, ValueError, KeyError, TypeError, RecursionError):
+        print("FAIL: check file access, Skill structure, JSON and fictional case decisions", file=sys.stderr)
         sys.exit(1)
