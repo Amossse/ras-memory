@@ -10,6 +10,16 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_oversized_report_is_rejected_before_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            report = {key: {"action": action, "reason": "fictional reason"}
+                      for key, action in check.EXPECTED.items()}
+            path.write_bytes(json.dumps(report).encode("utf-8") + b" " * (256 * 1024))
+            result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)], capture_output=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertNotIn(str(path).encode(), result.stderr)
+
     def test_failures_do_not_echo_paths_or_tracebacks(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "fictional-private-marker.json"

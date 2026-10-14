@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Read external model reports with a 256 KiB ceiling before JSON parsing; oversized reports fail without echoing contents or paths.
+- Add a subprocess regression using an otherwise valid oversized fictional report.
+
 - Keep checker failure diagnostics generic instead of echoing input paths or exception details, including deeply nested JSON failures.
 - Add subprocess regressions for missing, malformed, deeply nested and valid fictional reports, and run them in three-platform CI. These checks do not measure model behavior.
 

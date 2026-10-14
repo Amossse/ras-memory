@@ -54,6 +54,8 @@ The structural check is not a model behavior test. A fresh model should read `SK
 
 ## Safety and contribution
 
+External model reports are limited to 256 KiB before JSON parsing; shorten oversized reasons or remove excess data, then rerun the check.
+
 Checker errors use generic diagnostics without echoing report paths or raw exception details. Subprocess regressions check invalid and valid fictional reports; they do not evaluate a model.
 
 Read [SECURITY.md](SECURITY.md). Do not publish your real goals, memories, transcripts, host logs, or authentication configuration in issues. Submit a redacted fictional failure case and the expected decision. Keep changes narrow and rerun the checks. The release contains original instructions and fictional data only. [Changelog](CHANGELOG.md), [MIT license](LICENSE), and [bilingual launch drafts](LAUNCH.md).

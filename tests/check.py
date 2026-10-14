@@ -24,6 +24,14 @@ def check_report(report):
             raise ValueError(f"missing reason for {case_id}")
 
 
+def load_report(path):
+    with Path(path).open("rb") as stream:
+        data = stream.read(256 * 1024 + 1)
+    if len(data) > 256 * 1024:
+        raise ValueError("report exceeds 256 KiB")
+    return json.loads(data.decode("utf-8"))
+
+
 def main():
     root = Path(__file__).resolve().parents[1]
     skill = (root / "SKILL.md").read_text(encoding="utf-8")
@@ -53,7 +61,7 @@ def main():
             raise ValueError(f"checker accepted invalid {field}")
         report["scope"][field] = original
     if len(sys.argv) == 2:
-        check_report(json.loads(Path(sys.argv[1]).read_text(encoding="utf-8")))
+        check_report(load_report(sys.argv[1]))
         print("PASS: 10 model decisions; reasons still require human review")
     elif len(sys.argv) != 1:
         raise ValueError("usage: python tests/check.py [model-report.json]")
