@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject duplicate case IDs and nested decision fields in external JSON reports rather than validating only their last values.
+
 - Read external model reports with a 256 KiB ceiling before JSON parsing; oversized reports fail without echoing contents or paths.
 - Add a subprocess regression using an otherwise valid oversized fictional report.
 

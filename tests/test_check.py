@@ -10,6 +10,24 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_duplicate_case_or_decision_fields_are_rejected(self):
+        report = {key: {"action": action, "reason": "fictional reason"}
+                  for key, action in check.EXPECTED.items()}
+        raw = json.dumps(report)
+        ambiguous = (
+            '{"scope":{"action":"recall","reason":"fictional"},' + raw[1:],
+            raw.replace('"action": "skip"', '"action":"recall","action":"skip"', 1),
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            for payload in ambiguous:
+                path.write_text(payload, encoding="utf-8")
+                result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)],
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertNotIn(str(path), result.stderr)
+
     def test_oversized_report_is_rejected_before_validation(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "report.json"

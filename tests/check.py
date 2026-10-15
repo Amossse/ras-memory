@@ -24,12 +24,21 @@ def check_report(report):
             raise ValueError(f"missing reason for {case_id}")
 
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON field")
+        result[key] = value
+    return result
+
+
 def load_report(path):
     with Path(path).open("rb") as stream:
         data = stream.read(256 * 1024 + 1)
     if len(data) > 256 * 1024:
         raise ValueError("report exceeds 256 KiB")
-    return json.loads(data.decode("utf-8"))
+    return json.loads(data.decode("utf-8"), object_pairs_hook=unique_object)
 
 
 def main():
