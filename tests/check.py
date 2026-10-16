@@ -18,7 +18,7 @@ def check_report(report):
         raise ValueError("report must contain exactly the fictional case IDs")
     for case_id, action in EXPECTED.items():
         item = report[case_id]
-        if not isinstance(item, dict) or item.get("action") != action:
+        if not isinstance(item, dict) or set(item) != {"action", "reason"} or item.get("action") != action:
             raise ValueError(f"unexpected decision for {case_id}")
         if not isinstance(item.get("reason"), str) or not item["reason"].strip():
             raise ValueError(f"missing reason for {case_id}")

@@ -56,6 +56,7 @@ The structural check is not a model behavior test. A fresh model should read `SK
 
 External model reports are limited to 256 KiB before JSON parsing; shorten oversized reasons or remove excess data, then rerun the check.
 Duplicate JSON fields at any depth are rejected, so a repeated case ID or action cannot silently replace an earlier decision.
+Each case must contain exactly `action` and `reason`. Extra fields are refused rather than ignored; passing this schema check still does not establish that any reported behavior actually occurred.
 
 Checker errors use generic diagnostics without echoing report paths or raw exception details. Subprocess regressions check invalid and valid fictional reports; they do not evaluate a model.
 

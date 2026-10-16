@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Require exactly action and reason in every model decision; reject unchecked extra fields, including conflicting claimed actions. Reasons still need human review.
+
 - Reject duplicate case IDs and nested decision fields in external JSON reports rather than validating only their last values.
 
 - Read external model reports with a 256 KiB ceiling before JSON parsing; oversized reports fail without echoing contents or paths.

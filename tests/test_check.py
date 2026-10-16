@@ -10,6 +10,20 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_unchecked_decision_fields_cannot_accompany_a_passing_action(self):
+        report = {key: {"action": action, "reason": "fictional reason"}
+                  for key, action in check.EXPECTED.items()}
+        report["scope"]["claimed_action"] = "propose-save"
+        with self.assertRaises(ValueError):
+            check.check_report(report)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text(json.dumps(report), encoding="utf-8")
+            result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertNotIn("claimed_action", result.stderr)
+
     def test_duplicate_case_or_decision_fields_are_rejected(self):
         report = {key: {"action": action, "reason": "fictional reason"}
                   for key, action in check.EXPECTED.items()}
