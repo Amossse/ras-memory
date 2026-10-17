@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject unpaired Unicode surrogates in decision reasons with the existing non-echoing diagnostic; valid Unicode reasons remain accepted. This checks representation, not reasoning quality.
+
 - Require exactly action and reason in every model decision; reject unchecked extra fields, including conflicting claimed actions. Reasons still need human review.
 
 - Reject duplicate case IDs and nested decision fields in external JSON reports rather than validating only their last values.

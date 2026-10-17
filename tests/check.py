@@ -22,6 +22,7 @@ def check_report(report):
             raise ValueError(f"unexpected decision for {case_id}")
         if not isinstance(item.get("reason"), str) or not item["reason"].strip():
             raise ValueError(f"missing reason for {case_id}")
+        item["reason"].encode("utf-8")
 
 
 def unique_object(pairs):
