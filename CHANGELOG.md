@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a fictional revoked-standing-consent case and checker regression: a current conversation-only instruction requires session-only retention despite an available backend. Clarify the policy and derive report counts from the case set. This expands evaluation coverage, not verified model behavior.
+
 - Reject unpaired Unicode surrogates in decision reasons with the existing non-echoing diagnostic; valid Unicode reasons remain accepted. This checks representation, not reasoning quality.
 
 - Require exactly action and reason in every model decision; reject unchecked extra fields, including conflicting claimed actions. Reasons still need human review.

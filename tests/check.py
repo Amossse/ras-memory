@@ -10,6 +10,7 @@ EXPECTED = {
     "contrary": "recall", "scope": "skip", "temporary": "session-only",
     "forget": "report-failure", "irrelevant": "omit-not-delete",
     "revision": "reread-not-overwrite",
+    "revoked": "session-only",
 }
 
 
@@ -72,7 +73,7 @@ def main():
         report["scope"][field] = original
     if len(sys.argv) == 2:
         check_report(load_report(sys.argv[1]))
-        print("PASS: 10 model decisions; reasons still require human review")
+        print(f"PASS: {len(EXPECTED)} model decisions; reasons still require human review")
     elif len(sys.argv) != 1:
         raise ValueError("usage: python tests/check.py [model-report.json]")
     else:

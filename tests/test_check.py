@@ -10,6 +10,16 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_revoked_standing_consent_requires_session_only_decision(self):
+        report = {key: {"action": action, "reason": "Fictional evidence"}
+                  for key, action in check.EXPECTED.items()}
+        self.assertEqual(check.EXPECTED["revoked"], "session-only")
+        report["revoked"]["action"] = "propose-save"
+        with self.assertRaises(ValueError):
+            check.check_report(report)
+        report["revoked"]["action"] = "session-only"
+        check.check_report(report)
+
     def test_unencodable_reasons_fail_without_echoing_report_details(self):
         report = {key: {"action": action, "reason": "Fictional evidence \U0001f4da"}
                   for key, action in check.EXPECTED.items()}
@@ -89,4 +99,4 @@ class CheckerDiagnostics(unittest.TestCase):
             result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)],
                                     capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("10 model decisions", result.stdout)
+            self.assertIn(f"{len(check.EXPECTED)} model decisions", result.stdout)
