@@ -1,15 +1,38 @@
 """Fictional checker inputs; no model calls or memory writes."""
 import json
+import os
+import stat
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_opened_report_descriptor_must_be_a_regular_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text("{}", encoding="utf-8")
+            with patch.object(os, "fstat", return_value=SimpleNamespace(st_mode=stat.S_IFIFO)):
+                with self.assertRaises(ValueError):
+                    check.load_report(path)
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "POSIX FIFO check")
+    def test_fifo_report_fails_without_waiting_for_a_writer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "fictional-report-pipe"
+            os.mkfifo(path)
+            result = subprocess.run([sys.executable, str(Path(check.__file__)), str(path)],
+                                    capture_output=True, timeout=5)
+            self.assertEqual(result.returncode, 1)
+            self.assertNotIn(str(path).encode(), result.stderr)
+            self.assertNotIn(b"Traceback", result.stderr)
+
     def test_revoked_standing_consent_requires_session_only_decision(self):
         report = {key: {"action": action, "reason": "Fictional evidence"}
                   for key, action in check.EXPECTED.items()}

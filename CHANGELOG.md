@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Require external decision reports to be regular files, checking the opened descriptor before reading. POSIX nonblocking open prevents a FIFO from waiting for a writer; retain the byte ceiling and non-echoing failure diagnostic. No model behavior is measured.
+
 - Add a fictional revoked-standing-consent case and checker regression: a current conversation-only instruction requires session-only retention despite an available backend. Clarify the policy and derive report counts from the case set. This expands evaluation coverage, not verified model behavior.
 
 - Reject unpaired Unicode surrogates in decision reasons with the existing non-echoing diagnostic; valid Unicode reasons remain accepted. This checks representation, not reasoning quality.

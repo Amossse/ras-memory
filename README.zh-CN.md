@@ -52,6 +52,8 @@ RAS Memory 负责记忆决策，底层存储可以复用 [Agent Mem](https://git
 
 ## 验证与贡献
 
+外部决策报告必须是普通文件。POSIX 下通过非阻塞打开和文件描述符检查拒绝管道，不等待写入方；Windows 运行描述符回归，跳过 POSIX 管道案例。请先把完整报告保存为普通 JSON 文件再校验。失败提示不会回显路径或原文；这不是操作系统沙箱或模型行为测试。
+
 ```sh
 python3 tests/check.py
 python3 -m unittest discover -s tests -v

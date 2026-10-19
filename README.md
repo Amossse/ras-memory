@@ -56,6 +56,8 @@ The current 11-case set also covers revoked standing write consent: a new prefer
 
 ## Safety and contribution
 
+External decision reports must be regular files. On POSIX, a nonblocking open and descriptor check reject FIFOs without waiting for a writer; non-regular inputs fail with the same non-echoing diagnostic. Windows runs the descriptor regression but skips the POSIX FIFO case. Save a complete report to a regular JSON file before checking it. This is input validation, not an OS sandbox or a model behavior test.
+
 External model reports are limited to 256 KiB before JSON parsing; shorten oversized reasons or remove excess data, then rerun the check.
 Duplicate JSON fields at any depth are rejected, so a repeated case ID or action cannot silently replace an earlier decision.
 Each case must contain exactly `action` and `reason`. Extra fields are refused rather than ignored; passing this schema check still does not establish that any reported behavior actually occurred.
