@@ -14,6 +14,39 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_rejected_paths_and_stream_open_failures_close_the_descriptor(self):
+        original_open, original_fdopen = os.open, os.fdopen
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            report = root / "report.json"
+            report.write_text("{}", encoding="utf-8")
+            for source in ([root, report] if os.name == "posix" else [report]):
+                opened = []
+
+                def record_open(*args, **kwargs):
+                    descriptor = original_open(*args, **kwargs)
+                    opened.append(descriptor)
+                    return descriptor
+
+                def open_stream(*args, **kwargs):
+                    if source == report:
+                        raise OSError("fictional stream-open failure")
+                    return original_fdopen(*args, **kwargs)
+
+                try:
+                    with patch.object(os, "open", record_open), patch.object(os, "fdopen", open_stream):
+                        with self.assertRaises((OSError, ValueError)):
+                            check.load_report(source)
+                    self.assertEqual(len(opened), 1)
+                    with self.assertRaises(OSError):
+                        os.fstat(opened[0])
+                finally:
+                    for descriptor in opened:
+                        try:
+                            os.close(descriptor)
+                        except OSError:
+                            pass
+
     def test_opened_report_descriptor_must_be_a_regular_file(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "report.json"

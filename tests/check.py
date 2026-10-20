@@ -40,10 +40,14 @@ def unique_object(pairs):
 def load_report(path):
     # A FIFO must not wait for a writer before we can inspect its actual descriptor.
     flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_BINARY", 0)
-    with os.fdopen(os.open(path, flags), "rb") as stream:
-        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+    descriptor = os.open(path, flags)
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
             raise ValueError("report must be a regular file")
-        data = stream.read(256 * 1024 + 1)
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            data = stream.read(256 * 1024 + 1)
+    finally:
+        os.close(descriptor)
     if len(data) > 256 * 1024:
         raise ValueError("report exceeds 256 KiB")
     return json.loads(data.decode("utf-8"), object_pairs_hook=unique_object)

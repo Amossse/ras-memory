@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Close report descriptors on rejected directories and stream-wrapper failures as well as successful reads. Check file type before constructing the stream, retain nonblocking FIFO rejection and byte limits, and add descriptor-lifetime regressions. No model behavior is measured.
+
 - Require external decision reports to be regular files, checking the opened descriptor before reading. POSIX nonblocking open prevents a FIFO from waiting for a writer; retain the byte ceiling and non-echoing failure diagnostic. No model behavior is measured.
 
 - Add a fictional revoked-standing-consent case and checker regression: a current conversation-only instruction requires session-only retention despite an available backend. Clarify the policy and derive report counts from the case set. This expands evaluation coverage, not verified model behavior.
