@@ -14,6 +14,16 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_budget_case_requires_disclosure_not_silent_recall(self):
+        report = {key: {"action": action, "reason": "Fictional evidence"}
+                  for key, action in check.EXPECTED.items()}
+        self.assertEqual(check.EXPECTED["budget"], "disclose-omission")
+        check.check_report(report)
+        for action in ("recall", "skip", "omit-not-delete"):
+            report["budget"]["action"] = action
+            with self.assertRaises(ValueError):
+                check.check_report(report)
+
     def test_rejected_paths_and_stream_open_failures_close_the_descriptor(self):
         original_open, original_fdopen = os.open, os.fdopen
         with tempfile.TemporaryDirectory() as directory:

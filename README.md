@@ -52,7 +52,7 @@ python3 tests/check.py /path/to/model-report.json
 
 The structural check is not a model behavior test. A fresh model should read `SKILL.md` and `tests/cases.json` and return a JSON object mapping each case ID to its chosen action and a reason, without tools or writes. See [validation record](VALIDATION.md). Finite synthetic cases do not prove production reliability, automatic Skill discovery, or privacy guarantees. Semantic judgments, prompt-injection resistance, and information freshness depend on the host/model. This policy is not an access-control sandbox.
 
-The current 11-case set also covers revoked standing write consent: a new preference explicitly restricted to the current conversation remains session-only even with an available backend. Earlier 10-case validation records do not cover this addition. Checker regressions validate its expected action, not whether a fresh model follows it; no backend write is performed.
+The current 12-case set also covers revoked standing write consent and budget-limited recall. Conversation-only retention requires `session-only` despite an available backend; omitting a relevant conflict requires `disclose-omission` within the response budget rather than silently hiding it or dumping extra records. Earlier 10-case model validation does not cover these additions. Checker regressions validate expected action labels, not a fresh model's decisions, reason quality or actual budget compliance; no backend write is performed.
 
 ## Safety and contribution
 

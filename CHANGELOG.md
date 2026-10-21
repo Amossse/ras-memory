@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a fictional budget-limited recall case for disclosing an omitted relevant conflict, plus a checker regression rejecting silent recall/skip decisions. This fills an existing policy-branch evaluation gap; action-label checks do not measure fresh model decisions, reason quality or actual response-budget compliance.
+
 - Close report descriptors on rejected directories and stream-wrapper failures as well as successful reads. Check file type before constructing the stream, retain nonblocking FIFO rejection and byte limits, and add descriptor-lifetime regressions. No model behavior is measured.
 
 - Require external decision reports to be regular files, checking the opened descriptor before reading. POSIX nonblocking open prevents a FIFO from waiting for a writer; retain the byte ceiling and non-echoing failure diagnostic. No model behavior is measured.

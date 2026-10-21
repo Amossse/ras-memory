@@ -13,6 +13,7 @@ EXPECTED = {
     "forget": "report-failure", "irrelevant": "omit-not-delete",
     "revision": "reread-not-overwrite",
     "revoked": "session-only",
+    "budget": "disclose-omission",
 }
 
 
