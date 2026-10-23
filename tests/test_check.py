@@ -1,5 +1,6 @@
 """Fictional checker inputs; no model calls or memory writes."""
 import json
+import io
 import os
 import stat
 from pathlib import Path
@@ -14,6 +15,32 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_case_catalog_requires_nonempty_utf8_prompts(self):
+        cases = [{"id": key, "request": "Fictional task"} for key in check.EXPECTED]
+        original_read = Path.read_text
+        missing_prompt = [dict(item) for item in cases]
+        del missing_prompt[0]["request"]
+
+        def read_fixture(path, *args, **kwargs):
+            if path.name == "cases.json":
+                return json.dumps(missing_prompt)
+            return original_read(path, *args, **kwargs)
+
+        with patch.object(Path, "read_text", read_fixture), patch.object(sys, "argv", ["check.py"]), \
+                patch("sys.stdout", io.StringIO()), self.assertRaises(ValueError):
+            check.main()
+        check.check_cases(cases)
+        for request in (None, "", "  ", 42, "\ud800"):
+            malformed = [dict(item) for item in cases]
+            if request is None:
+                del malformed[0]["request"]
+            else:
+                malformed[0]["request"] = request
+            with self.assertRaises(ValueError):
+                check.check_cases(malformed)
+        with self.assertRaises(ValueError):
+            check.check_cases(cases + [cases[0]])
+
     def test_budget_case_requires_disclosure_not_silent_recall(self):
         report = {key: {"action": action, "reason": "Fictional evidence"}
                   for key, action in check.EXPECTED.items()}

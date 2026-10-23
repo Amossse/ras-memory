@@ -43,6 +43,8 @@ Configuration is conversational: current task, allowed scope, consent, and recal
 
 ## Validation and limits
 
+The case catalog must contain exactly `id` and a nonempty UTF-8 `request` per case, with the expected unique IDs. Missing/blank/non-text prompts and duplicate JSON fields fail validation instead of producing a misleading structural pass. This checks evaluation inputs, not model reasoning or prompt quality.
+
 ```sh
 python3 tests/check.py
 python3 -m unittest discover -s tests -v

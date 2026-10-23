@@ -17,6 +17,22 @@ EXPECTED = {
 }
 
 
+def check_cases(cases):
+    if not isinstance(cases, list):
+        raise ValueError("cases must be a list")
+    ids = []
+    for item in cases:
+        if not isinstance(item, dict) or set(item) != {"id", "request"} or not isinstance(item["id"], str):
+            raise ValueError("invalid case fields")
+        request = item["request"]
+        if not isinstance(request, str) or not request.strip():
+            raise ValueError("missing case request")
+        request.encode("utf-8")
+        ids.append(item["id"])
+    if set(ids) != set(EXPECTED) or len(ids) != len(EXPECTED):
+        raise ValueError("duplicate or missing case IDs")
+
+
 def check_report(report):
     if not isinstance(report, dict) or set(report) != set(EXPECTED):
         raise ValueError("report must contain exactly the fictional case IDs")
@@ -65,9 +81,8 @@ def main():
         raise ValueError("name must match Skill folder")
     if not 1 <= len(fields.get("description", "").strip()) <= 1024:
         raise ValueError("invalid description")
-    cases = json.loads((root / "tests/cases.json").read_text(encoding="utf-8"))
-    if {item["id"] for item in cases} != set(EXPECTED) or len(cases) != len(EXPECTED):
-        raise ValueError("duplicate or missing case IDs")
+    cases = json.loads((root / "tests/cases.json").read_text(encoding="utf-8"), object_pairs_hook=unique_object)
+    check_cases(cases)
     # Check the checker rejects incorrect actions and missing evidence explanations.
     report = {key: {"action": value, "reason": "synthetic checker self-test"}
               for key, value in EXPECTED.items()}

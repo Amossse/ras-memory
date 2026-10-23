@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Validate each fictional case's exact fields and nonempty UTF-8 prompt before checker self-tests; reject duplicate catalog JSON fields as well as duplicate/missing IDs. Cover a missing-prompt catalog that previously passed. This validates evaluation inputs, not model behavior.
+
 - Add a fictional budget-limited recall case for disclosing an omitted relevant conflict, plus a checker regression rejecting silent recall/skip decisions. This fills an existing policy-branch evaluation gap; action-label checks do not measure fresh model decisions, reason quality or actual response-budget compliance.
 
 - Close report descriptors on rejected directories and stream-wrapper failures as well as successful reads. Check file type before constructing the stream, retain nonblocking FIFO rejection and byte limits, and add descriptor-lifetime regressions. No model behavior is measured.
