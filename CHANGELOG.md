@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a fictional factual-freshness case: a newer unsupported snippet cannot replace a sourced external fact solely on timestamp; verification is required first. Cover the expected action label in the checker. This fills an existing policy-branch evaluation gap, not fresh model or backend validation.
+
 - Validate each fictional case's exact fields and nonempty UTF-8 prompt before checker self-tests; reject duplicate catalog JSON fields as well as duplicate/missing IDs. Cover a missing-prompt catalog that previously passed. This validates evaluation inputs, not model behavior.
 
 - Add a fictional budget-limited recall case for disclosing an omitted relevant conflict, plus a checker regression rejecting silent recall/skip decisions. This fills an existing policy-branch evaluation gap; action-label checks do not measure fresh model decisions, reason quality or actual response-budget compliance.

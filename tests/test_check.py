@@ -15,6 +15,15 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_newer_unverified_fact_requires_verification_before_update(self):
+        report = {key: {"action": action, "reason": "Fictional evidence"}
+                  for key, action in check.EXPECTED.items()}
+        self.assertEqual(check.EXPECTED["freshness"], "verify-before-update")
+        check.check_report(report)
+        report["freshness"]["action"] = "propose-update"
+        with self.assertRaises(ValueError):
+            check.check_report(report)
+
     def test_case_catalog_requires_nonempty_utf8_prompts(self):
         cases = [{"id": key, "request": "Fictional task"} for key in check.EXPECTED]
         original_read = Path.read_text

@@ -14,6 +14,7 @@ EXPECTED = {
     "revision": "reread-not-overwrite",
     "revoked": "session-only",
     "budget": "disclose-omission",
+    "freshness": "verify-before-update",
 }
 
 
