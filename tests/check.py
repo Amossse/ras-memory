@@ -15,6 +15,7 @@ EXPECTED = {
     "revoked": "session-only",
     "budget": "disclose-omission",
     "freshness": "verify-before-update",
+    "accepted": "report-unconfirmed",
 }
 
 
