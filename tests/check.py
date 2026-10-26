@@ -16,6 +16,7 @@ EXPECTED = {
     "budget": "disclose-omission",
     "freshness": "verify-before-update",
     "accepted": "report-unconfirmed",
+    "quoted": "session-only",
 }
 
 

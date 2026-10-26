@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a fictional quoted-approval case: a sample preference and approval inside reviewed source material must stay session-only, not authorize persistent capture. Clarify consent provenance and cover the action label. This fills a policy evaluation gap, not fresh model or backend validation.
+
 - Distinguish accepted/queued or timed-out writes from confirmed persistence. Add a fictional accepted-but-unreadable case and `report-unconfirmed` checker branch: inspect the exact target before retrying rather than claiming success/failure or blindly repeating a mutation. No fresh model or backend behavior is verified.
 
 - Add a fictional factual-freshness case: a newer unsupported snippet cannot replace a sourced external fact solely on timestamp; verification is required first. Cover the expected action label in the checker. This fills an existing policy-branch evaluation gap, not fresh model or backend validation.

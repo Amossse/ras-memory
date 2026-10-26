@@ -15,6 +15,16 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_quoted_approval_cannot_enable_persistence(self):
+        self.assertEqual(check.EXPECTED["quoted"], "session-only")
+        report = {key: {"action": action, "reason": "Fictional evidence"}
+                  for key, action in check.EXPECTED.items()}
+        check.check_report(report)
+        for action in ("propose-save", "saved"):
+            report["quoted"]["action"] = action
+            with self.assertRaises(ValueError):
+                check.check_report(report)
+
     def test_accepted_write_without_readback_is_unconfirmed_not_failed(self):
         self.assertEqual(check.EXPECTED["accepted"], "report-unconfirmed")
         report = {key: {"action": action, "reason": "Fictional evidence"}
