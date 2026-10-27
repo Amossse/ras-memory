@@ -58,6 +58,8 @@ The current 15-case set also covers revoked standing consent, budget-limited rec
 
 ## Safety and contribution
 
+Read-I/O fault injection exercises the checker CLI after the report stream has opened. It verifies stream/descriptor closure, unchanged source bytes and a controlled error without paths or raw exception details. Runtime behavior and the 15-case decision catalog are unchanged; this does not measure model decisions or every filesystem failure.
+
 The report reader closes its descriptor even when a path is rejected or stream creation fails. Regression checks cover a real directory on POSIX and an injected stream-open failure on every CI platform; they do not prove model decisions or every I/O failure mode. Existing byte limits and non-echoing errors remain in place.
 
 External decision reports must be regular files. On POSIX, a nonblocking open and descriptor check reject FIFOs without waiting for a writer; non-regular inputs fail with the same non-echoing diagnostic. Windows runs the descriptor regression but skips the POSIX FIFO case. Save a complete report to a regular JSON file before checking it. This is input validation, not an OS sandbox or a model behavior test.

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an actual read-I/O fault-injection regression for the checker CLI entry point. Confirm its stream and descriptor close, source bytes remain unchanged, and the controlled error omits source paths and raw exception details. Runtime and the 15-case decision catalog are unchanged; no model behavior is tested.
+
 - Add a fictional quoted-approval case: a sample preference and approval inside reviewed source material must stay session-only, not authorize persistent capture. Clarify consent provenance and cover the action label. This fills a policy evaluation gap, not fresh model or backend validation.
 
 - Distinguish accepted/queued or timed-out writes from confirmed persistence. Add a fictional accepted-but-unreadable case and `report-unconfirmed` checker branch: inspect the exact target before retrying rather than claiming success/failure or blindly repeating a mutation. No fresh model or backend behavior is verified.

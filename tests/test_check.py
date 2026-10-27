@@ -2,8 +2,10 @@
 import json
 import io
 import os
+import runpy
 import stat
 from pathlib import Path
+from contextlib import contextmanager
 import subprocess
 import sys
 import tempfile
@@ -15,6 +17,39 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_read_io_failure_closes_resources_without_echoing_source_details(self):
+        original_fdopen = os.fdopen
+        opened, streams = [], []
+
+        class FailingRead:
+            def read(self, size):
+                raise OSError("Fictional read failure marker")
+
+        @contextmanager
+        def fail_read(descriptor, *args, **kwargs):
+            opened.append(descriptor)
+            with original_fdopen(descriptor, *args, **kwargs) as stream:
+                streams.append(stream)
+                yield FailingRead()
+
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "fictional-report.json"
+            source.write_text("{}", encoding="utf-8")
+            output, errors = io.StringIO(), io.StringIO()
+            with patch.object(os, "fdopen", fail_read), patch.object(sys, "argv", ["check.py", str(source)]), \
+                    patch("sys.stdout", output), patch("sys.stderr", errors):
+                with self.assertRaises(SystemExit) as exited:
+                    runpy.run_path(check.__file__, run_name="__main__")
+            self.assertEqual(exited.exception.code, 1)
+            self.assertEqual(len(opened), 1)
+            self.assertTrue(streams[0].closed)
+            with self.assertRaises(OSError):
+                os.fstat(opened[0])
+            self.assertNotIn("Fictional read failure marker", errors.getvalue())
+            self.assertNotIn(str(source), errors.getvalue())
+            self.assertNotIn("Traceback", errors.getvalue())
+            self.assertEqual(source.read_bytes(), b"{}")
+
     def test_quoted_approval_cannot_enable_persistence(self):
         self.assertEqual(check.EXPECTED["quoted"], "session-only")
         report = {key: {"action": action, "reason": "Fictional evidence"}
