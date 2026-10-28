@@ -1,5 +1,7 @@
 # RAS Memory
 
+External report bytes must decode strictly as UTF-8. Fictional CLI regressions accept Unicode UTF-8 and reject UTF-16, UTF-32 and malformed UTF-8 without changing the source or echoing its details. Runtime and the 15-case catalog are unchanged; no model behavior is measured.
+
 [中文](README.zh-CN.md)
 
 A portable Agent Skill for deciding **what to remember and what to recall**. Capture durable, authorized information; keep transient context out of long-term memory; retain counterevidence; review corrections and forgetting without silently rewriting history.

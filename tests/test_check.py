@@ -17,6 +17,25 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_reports_require_strict_utf8_without_modifying_source(self):
+        report = {key: {"action": action, "reason": "Fictional 样例"}
+                  for key, action in check.EXPECTED.items()}
+        raw = json.dumps(report, ensure_ascii=False)
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "fictional-report.json"
+            command = [sys.executable, str(Path(check.__file__)), str(source)]
+            source.write_bytes(raw.encode("utf-8"))
+            subprocess.run(command, capture_output=True, check=True)
+            for payload in (raw.encode("utf-16"), raw.encode("utf-32"),
+                            raw.encode("utf-8").replace(b"Fictional", b"Fictional\xff", 1)):
+                source.write_bytes(payload)
+                rejected = subprocess.run(command, capture_output=True)
+                self.assertEqual(rejected.returncode, 1)
+                self.assertNotIn(b"Traceback", rejected.stderr)
+                self.assertNotIn(b"Fictional", rejected.stderr)
+                self.assertNotIn(str(source).encode(), rejected.stderr)
+                self.assertEqual(source.read_bytes(), payload)
+
     def test_read_io_failure_closes_resources_without_echoing_source_details(self):
         original_fdopen = os.fdopen
         opened, streams = [], []

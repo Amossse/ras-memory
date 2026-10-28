@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Cover strict external-report UTF-8 decoding through the CLI, including valid Unicode, UTF-16/32 rejection and malformed bytes. Preserve source bytes and non-echoing diagnostics; runtime and the 15-case catalog are unchanged.
+
 - Add an actual read-I/O fault-injection regression for the checker CLI entry point. Confirm its stream and descriptor close, source bytes remain unchanged, and the controlled error omits source paths and raw exception details. Runtime and the 15-case decision catalog are unchanged; no model behavior is tested.
 
 - Add a fictional quoted-approval case: a sample preference and approval inside reviewed source material must stay session-only, not authorize persistent capture. Clarify consent provenance and cover the action label. This fills a policy evaluation gap, not fresh model or backend validation.
