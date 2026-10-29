@@ -45,6 +45,8 @@ Configuration is conversational: current task, allowed scope, consent, and recal
 
 ## Validation and limits
 
+The report byte-budget regression accepts valid Unicode JSON padded to exactly 256 KiB and rejects one additional byte through the CLI, preserving the source and non-echoing diagnostics. Runtime and the 15 decision cases are unchanged; this measures a parser boundary, not model quality.
+
 The case catalog must contain exactly `id` and a nonempty UTF-8 `request` per case, with the expected unique IDs. Missing/blank/non-text prompts and duplicate JSON fields fail validation instead of producing a misleading structural pass. This checks evaluation inputs, not model reasoning or prompt quality.
 
 ```sh

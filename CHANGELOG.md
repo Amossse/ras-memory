@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Cover the exact 256 KiB report boundary with multibyte UTF-8 and valid JSON whitespace; reject one extra byte without modifying or echoing source details. Runtime and the decision catalog are unchanged.
+
 - Cover strict external-report UTF-8 decoding through the CLI, including valid Unicode, UTF-16/32 rejection and malformed bytes. Preserve source bytes and non-echoing diagnostics; runtime and the 15-case catalog are unchanged.
 
 - Add an actual read-I/O fault-injection regression for the checker CLI entry point. Confirm its stream and descriptor close, source bytes remain unchanged, and the controlled error omits source paths and raw exception details. Runtime and the 15-case decision catalog are unchanged; no model behavior is tested.

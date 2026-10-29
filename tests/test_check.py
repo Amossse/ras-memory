@@ -17,6 +17,27 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_report_byte_limit_accepts_exact_boundary_and_rejects_one_more_byte(self):
+        report = {key: {"action": action, "reason": "Fictional 样例"}
+                  for key, action in check.EXPECTED.items()}
+        raw = json.dumps(report, ensure_ascii=False).encode("utf-8")
+        limit = 256 * 1024
+        self.assertLess(len(raw), limit)
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "fictional-report.json"
+            boundary = raw + b" " * (limit - len(raw))
+            source.write_bytes(boundary)
+            self.assertEqual(check.load_report(source), report)
+            command = [sys.executable, str(Path(check.__file__)), str(source)]
+            subprocess.run(command, capture_output=True, check=True)
+            oversized = boundary + b" "
+            source.write_bytes(oversized)
+            result = subprocess.run(command, capture_output=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(source.read_bytes(), oversized)
+            for detail in (str(source).encode(), b"Fictional", b"Traceback"):
+                self.assertNotIn(detail, result.stderr)
+
     def test_reports_require_strict_utf8_without_modifying_source(self):
         report = {key: {"action": action, "reason": "Fictional 样例"}
                   for key, action in check.EXPECTED.items()}
