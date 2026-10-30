@@ -17,6 +17,21 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_ambiguous_forget_requires_clarifying_the_exact_target(self):
+        self.assertEqual(check.EXPECTED.get("ambiguous-forget"), "clarify-target")
+        report = {key: {"action": action, "reason": "Fictional target is unresolved"}
+                  for key, action in check.EXPECTED.items()}
+        check.check_report(report)
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "fictional-report.json"
+            for bad in ("propose-delete", "report-success", "skip"):
+                report["ambiguous-forget"]["action"] = bad
+                source.write_text(json.dumps(report), encoding="utf-8")
+                result = subprocess.run([sys.executable, str(Path(check.__file__)), str(source)], capture_output=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn(b"Traceback", result.stderr)
+                self.assertNotIn(str(source).encode(), result.stderr)
+
     def test_report_byte_limit_accepts_exact_boundary_and_rejects_one_more_byte(self):
         report = {key: {"action": action, "reason": "Fictional 样例"}
                   for key, action in check.EXPECTED.items()}

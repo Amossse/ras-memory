@@ -43,6 +43,8 @@ For contradictions, show what changed and the supporting source. Prefer the late
 
 For stale goals, expired facts, duplicates, or explicit forget requests, propose review, update, or deletion with target IDs and scope. Unrelated to today's task means omit from recall, not delete from storage. Do not prune unrelated records during a targeted forget request.
 
+When a forget request matches multiple records without an exact prior selection, choose **clarify-target**: ask which IDs in the authorized scope the user means before any mutation. Do not guess the first match or broaden the request to all matches.
+
 Before a mutation, resolve targets and honor the backend's authorization, revision, and deletion safeguards. Use the current revision; a conflict requires rereading rather than force-overwriting. Read back the result. If the backend fails, report the failed action and minimal retry; never claim persistence or deletion without confirmation. An accepted/queued request or transport timeout is not confirmation. If read-back is unavailable, report the outcome as unconfirmed and inspect the exact target before retrying a mutation; do not blindly repeat a write. Deletion from the active store does not guarantee deletion from backups, exports, host history, or provider logs.
 
 ## Report only meaningful changes

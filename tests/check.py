@@ -17,6 +17,7 @@ EXPECTED = {
     "freshness": "verify-before-update",
     "accepted": "report-unconfirmed",
     "quoted": "session-only",
+    "ambiguous-forget": "clarify-target",
 }
 
 
