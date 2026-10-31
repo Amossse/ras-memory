@@ -17,6 +17,16 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_confirmed_active_deletion_does_not_claim_all_copies_erased(self):
+        self.assertEqual(check.EXPECTED.get("retention"), "disclose-retention")
+        report = {key: {"action": action, "reason": "Fictional active-store deletion only"}
+                  for key, action in check.EXPECTED.items()}
+        check.check_report(report)
+        for bad in ("report-success", "forgotten-everywhere", "report-failure"):
+            report["retention"]["action"] = bad
+            with self.assertRaises(ValueError):
+                check.check_report(report)
+
     def test_ambiguous_forget_requires_clarifying_the_exact_target(self):
         self.assertEqual(check.EXPECTED.get("ambiguous-forget"), "clarify-target")
         report = {key: {"action": action, "reason": "Fictional target is unresolved"}

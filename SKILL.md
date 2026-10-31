@@ -49,6 +49,8 @@ Before a mutation, resolve targets and honor the backend's authorization, revisi
 
 ## Report only meaningful changes
 
+After confirmed active-store deletion, choose **disclose-retention** when backups, exports or host/provider history remain outside the verified scope. Report the confirmed target outcome separately from those unverified copies; do not claim universal erasure or perform additional cleanup without authority.
+
 Use a short report: recalled items and why; proposed saves/updates/forgets and evidence; skipped or uncertain items; actual confirmed operations versus proposals. If nothing qualifies, say so. Never fill a memory quota.
 
 Example: user says "Remember that I prefer metric measurements for recipes" and supplies a one-day weather note. Propose the recipe preference for the authorized personal scope, keep weather session-only if relevant, and save only when the selected backend confirms it. A later "Use cups for this recipe only" overrides recall for that task without rewriting the durable preference.

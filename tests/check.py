@@ -18,6 +18,7 @@ EXPECTED = {
     "accepted": "report-unconfirmed",
     "quoted": "session-only",
     "ambiguous-forget": "clarify-target",
+    "retention": "disclose-retention",
 }
 
 
