@@ -45,6 +45,8 @@ Configuration is conversational: current task, allowed scope, consent, and recal
 
 ## Validation and limits
 
+The repository checker works when a source checkout/archive folder is renamed, while still requiring the canonical Skill name `ras-memory`. Installed Skill folders must still be named `ras-memory`. A regression checks renamed-checkout success and wrong-name refusal; no policy cases or model behavior are changed.
+
 The 17-case catalog adds a retention-boundary case: after verified active-store deletion, require `disclose-retention` for unverified backups, exports and host/provider history. Keep the confirmed deletion separate from any claim of universal erasure. This checks policy labels, not a fresh model or deletion backend.
 
 The catalog also covers ambiguous forgetting: if multiple authorized records match and no exact target was selected, require `clarify-target` before any mutation. The checker rejects deletion/success/skip labels for this case. This is a policy regression, not a fresh model evaluation or backend deletion test.

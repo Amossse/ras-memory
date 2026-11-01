@@ -3,6 +3,7 @@ import json
 import io
 import os
 import runpy
+import shutil
 import stat
 from pathlib import Path
 from contextlib import contextmanager
@@ -17,6 +18,26 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_checker_accepts_renamed_source_checkouts_but_not_a_wrong_skill_name(self):
+        repository = Path(check.__file__).resolve().parents[1]
+        original = (repository / "SKILL.md").read_bytes()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "fictional-checkout"
+            (root / "tests").mkdir(parents=True)
+            for name in ("check.py", "cases.json"):
+                shutil.copy2(repository / "tests" / name, root / "tests" / name)
+            shutil.copy2(repository / "SKILL.md", root / "SKILL.md")
+            command = [sys.executable, str(root / "tests/check.py")]
+            valid = subprocess.run(command, capture_output=True)
+            self.assertEqual(valid.returncode, 0, valid.stderr)
+            self.assertIn(b"model behavior not tested", valid.stdout)
+            (root / "SKILL.md").write_bytes(original.replace(b"name: ras-memory", b"name: fictional-other", 1))
+            rejected = subprocess.run(command, capture_output=True)
+            self.assertEqual(rejected.returncode, 1)
+            self.assertNotIn(b"Traceback", rejected.stderr)
+            self.assertNotIn(str(root).encode(), rejected.stderr)
+        self.assertEqual((repository / "SKILL.md").read_bytes(), original)
+
     def test_confirmed_active_deletion_does_not_claim_all_copies_erased(self):
         self.assertEqual(check.EXPECTED.get("retention"), "disclose-retention")
         report = {key: {"action": action, "reason": "Fictional active-store deletion only"}

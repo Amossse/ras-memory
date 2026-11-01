@@ -82,8 +82,8 @@ def main():
     if len(parts) != 3 or parts[0].strip():
         raise ValueError("missing YAML frontmatter")
     fields = dict(line.split(":", 1) for line in parts[1].strip().splitlines())
-    if fields.get("name", "").strip() != root.name:
-        raise ValueError("name must match Skill folder")
+    if fields.get("name", "").strip() != "ras-memory":
+        raise ValueError("name must be ras-memory")
     if not 1 <= len(fields.get("description", "").strip()) <= 1024:
         raise ValueError("invalid description")
     cases = json.loads((root / "tests/cases.json").read_text(encoding="utf-8"), object_pairs_hook=unique_object)

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Validate the canonical Skill name independently of a source checkout's directory name, allowing renamed/archive checkouts to run the checker. Keep wrong-name refusal and installation naming requirements; decision cases are unchanged.
+
 - Add one fictional verified-deletion/unknown-copies case and disclose-retention label. Require scoped outcome reporting rather than universal erasure or false failure; no model or backend deletion validation.
 
 - Add one fictional ambiguous-forget case and clarify-target label, requiring exact target clarification before mutation. Clarify the Skill boundary and reject premature deletion/success/skip labels; no new model or backend validation.
