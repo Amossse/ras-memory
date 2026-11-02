@@ -28,14 +28,17 @@ class CheckerDiagnostics(unittest.TestCase):
                 shutil.copy2(repository / "tests" / name, root / "tests" / name)
             skill = root / "SKILL.md"
             command = [sys.executable, str(root / "tests/check.py")]
-            for field in (b"name: fictional-other\n", b"description: Fictional duplicate\n"):
-                raw = original.replace(b"---\n", b"---\n" + field, 1)
-                skill.write_bytes(raw)
-                result = subprocess.run(command, capture_output=True)
-                self.assertEqual(result.returncode, 1)
-                self.assertEqual(skill.read_bytes(), raw)
-                for detail in (str(root).encode(), b"Fictional", b"Traceback"):
-                    self.assertNotIn(detail, result.stderr)
+            for newline in (b"\n", b"\r\n"):
+                template = original.replace(b"\r\n", b"\n").replace(b"\n", newline)
+                for field in (b"name: fictional-other", b"description: Fictional duplicate"):
+                    raw = template.replace(b"---" + newline, b"---" + newline + field + newline, 1)
+                    self.assertNotEqual(raw, template)
+                    skill.write_bytes(raw)
+                    result = subprocess.run(command, capture_output=True)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertEqual(skill.read_bytes(), raw)
+                    for detail in (str(root).encode(), b"Fictional", b"Traceback"):
+                        self.assertNotIn(detail, result.stderr)
             skill.write_bytes(original)
             subprocess.run(command, capture_output=True, check=True)
 
