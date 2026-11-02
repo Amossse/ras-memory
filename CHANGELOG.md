@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject duplicate flat Skill frontmatter fields instead of silently taking the last value. Cover copied-checkout name/description duplicates, unchanged source bytes and a corrected retry; no policy changes.
+
 - Validate the canonical Skill name independently of a source checkout's directory name, allowing renamed/archive checkouts to run the checker. Keep wrong-name refusal and installation naming requirements; decision cases are unchanged.
 
 - Add one fictional verified-deletion/unknown-copies case and disclose-retention label. Require scoped outcome reporting rather than universal erasure or false failure; no model or backend deletion validation.

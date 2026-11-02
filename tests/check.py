@@ -81,7 +81,7 @@ def main():
     parts = skill.split("---", 2)
     if len(parts) != 3 or parts[0].strip():
         raise ValueError("missing YAML frontmatter")
-    fields = dict(line.split(":", 1) for line in parts[1].strip().splitlines())
+    fields = unique_object(line.split(":", 1) for line in parts[1].strip().splitlines())
     if fields.get("name", "").strip() != "ras-memory":
         raise ValueError("name must be ras-memory")
     if not 1 <= len(fields.get("description", "").strip()) <= 1024:

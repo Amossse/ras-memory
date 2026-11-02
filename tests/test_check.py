@@ -18,6 +18,27 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_duplicate_skill_metadata_is_refused_without_rewriting_source(self):
+        repository = Path(check.__file__).resolve().parents[1]
+        original = (repository / "SKILL.md").read_bytes()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "ras-memory"
+            (root / "tests").mkdir(parents=True)
+            for name in ("check.py", "cases.json"):
+                shutil.copy2(repository / "tests" / name, root / "tests" / name)
+            skill = root / "SKILL.md"
+            command = [sys.executable, str(root / "tests/check.py")]
+            for field in (b"name: fictional-other\n", b"description: Fictional duplicate\n"):
+                raw = original.replace(b"---\n", b"---\n" + field, 1)
+                skill.write_bytes(raw)
+                result = subprocess.run(command, capture_output=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertEqual(skill.read_bytes(), raw)
+                for detail in (str(root).encode(), b"Fictional", b"Traceback"):
+                    self.assertNotIn(detail, result.stderr)
+            skill.write_bytes(original)
+            subprocess.run(command, capture_output=True, check=True)
+
     def test_checker_accepts_renamed_source_checkouts_but_not_a_wrong_skill_name(self):
         repository = Path(check.__file__).resolve().parents[1]
         original = (repository / "SKILL.md").read_bytes()
