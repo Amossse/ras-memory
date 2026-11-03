@@ -18,6 +18,19 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_utf8_bom_reports_are_accepted_without_rewriting_source(self):
+        report = {key: {"action": action, "reason": "Fictional 样例"}
+                  for key, action in check.EXPECTED.items()}
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "fictional-report.json"
+            for encoding in ("utf-8", "utf-8-sig"):
+                raw = json.dumps(report, ensure_ascii=False).encode(encoding)
+                source.write_bytes(raw)
+                self.assertEqual(check.load_report(source), report)
+                result = subprocess.run([sys.executable, str(Path(check.__file__)), str(source)], capture_output=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(source.read_bytes(), raw)
+
     def test_duplicate_skill_metadata_is_refused_without_rewriting_source(self):
         repository = Path(check.__file__).resolve().parents[1]
         original = (repository / "SKILL.md").read_bytes()

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accept an optional UTF-8 BOM in model-report JSON without rewriting input. Cover plain/BOM CLI checks while retaining existing strict encoding and byte-limit regressions; no decision-policy changes.
+
 - Reject duplicate flat Skill frontmatter fields instead of silently taking the last value. Cover copied-checkout name/description duplicates, unchanged source bytes and a corrected retry; no policy changes.
 
 - Validate the canonical Skill name independently of a source checkout's directory name, allowing renamed/archive checkouts to run the checker. Keep wrong-name refusal and installation naming requirements; decision cases are unchanged.

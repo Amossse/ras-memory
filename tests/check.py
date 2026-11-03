@@ -72,7 +72,7 @@ def load_report(path):
         os.close(descriptor)
     if len(data) > 256 * 1024:
         raise ValueError("report exceeds 256 KiB")
-    return json.loads(data.decode("utf-8"), object_pairs_hook=unique_object)
+    return json.loads(data.decode("utf-8-sig"), object_pairs_hook=unique_object)
 
 
 def main():
