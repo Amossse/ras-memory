@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The report checker rejects terminal control characters in reasons and accepts ordinary Unicode, tabs and newlines.
+
 - Accept an optional UTF-8 BOM in model-report JSON without rewriting input. Cover plain/BOM CLI checks while retaining existing strict encoding and byte-limit regressions; no decision-policy changes.
 
 - Reject duplicate flat Skill frontmatter fields instead of silently taking the last value. Cover copied-checkout name/description duplicates, unchanged source bytes and a corrected retry; no policy changes.

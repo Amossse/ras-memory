@@ -18,6 +18,16 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_report_reasons_reject_invisible_terminal_controls(self):
+        report = {key: {"action": action, "reason": "Fictional explanation"}
+                  for key, action in check.EXPECTED.items()}
+        for code in (0, 27, 127, 155):
+            report["scope"]["reason"] = "Fictional" + chr(code) + "note"
+            with self.assertRaises(ValueError):
+                check.check_report(report)
+        report["scope"]["reason"] = "Fictional explanation\n第二行"
+        check.check_report(report)
+
     def test_utf8_bom_reports_are_accepted_without_rewriting_source(self):
         report = {key: {"action": action, "reason": "Fictional 样例"}
                   for key, action in check.EXPECTED.items()}

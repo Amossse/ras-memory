@@ -45,6 +45,9 @@ Configuration is conversational: current task, allowed scope, consent, and recal
 
 ## Validation and limits
 
+
+The report checker rejects terminal control characters in reasons and accepts ordinary Unicode, tabs and newlines.
+
 Model-report JSON accepts UTF-8 with or without a leading BOM, including ordinary Unicode explanations, without rewriting the source. UTF-16/32 and malformed UTF-8 remain rejected; the existing byte limit includes the BOM. This improves file interchange, not the quality or truth of model decisions.
 
 The checker rejects duplicate fields in the supported flat Skill frontmatter instead of silently accepting the last value. Fictional copied-checkout regressions preserve rejected input and allow a corrected retry. The decision catalog and model behavior are unchanged; this is not a general YAML validator.

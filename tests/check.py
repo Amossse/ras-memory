@@ -47,7 +47,10 @@ def check_report(report):
             raise ValueError(f"unexpected decision for {case_id}")
         if not isinstance(item.get("reason"), str) or not item["reason"].strip():
             raise ValueError(f"missing reason for {case_id}")
-        item["reason"].encode("utf-8")
+        reason = item["reason"]
+        if any((ord(c) < 32 or 127 <= ord(c) <= 159) and c not in "\n\t" for c in reason):
+            raise ValueError(f"control character in reason for {case_id}")
+        reason.encode("utf-8")
 
 
 def unique_object(pairs):
