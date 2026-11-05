@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The structural checker recognizes frontmatter delimiters only on standalone lines, so inline hyphens in a description cannot hide duplicate metadata.
+
 - The report checker rejects terminal control characters in reasons and accepts ordinary Unicode, tabs and newlines.
 
 - Accept an optional UTF-8 BOM in model-report JSON without rewriting input. Cover plain/BOM CLI checks while retaining existing strict encoding and byte-limit regressions; no decision-policy changes.

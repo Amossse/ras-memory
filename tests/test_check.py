@@ -18,6 +18,25 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_inline_hyphens_do_not_hide_duplicate_frontmatter_fields(self):
+        repository = Path(check.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tests").mkdir()
+            for name in ("check.py", "cases.json"):
+                shutil.copy2(repository / "tests" / name, root / "tests" / name)
+            skill = root / "SKILL.md"
+            valid = "---\nname: ras-memory\ndescription: Fictional --- description\n---\nBody\n"
+            command = [sys.executable, str(root / "tests/check.py")]
+            for newline in ("\n", "\r\n"):
+                skill.write_bytes(valid.replace("\n", newline).encode("utf-8"))
+                subprocess.run(command, capture_output=True, check=True)
+                invalid = valid.replace("\n---\nBody", "\nname: fictional-other\n---\nBody")
+                skill.write_bytes(invalid.replace("\n", newline).encode("utf-8"))
+                result = subprocess.run(command, capture_output=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn(b"Traceback", result.stderr)
+
     def test_report_reasons_reject_invisible_terminal_controls(self):
         report = {key: {"action": action, "reason": "Fictional explanation"}
                   for key, action in check.EXPECTED.items()}
