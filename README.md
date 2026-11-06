@@ -45,6 +45,8 @@ Configuration is conversational: current task, allowed scope, consent, and recal
 
 ## Validation and limits
 
+The flat frontmatter checker trims field-name whitespace before detecting duplicates, accepting ordinary spacing and rejecting ambiguous names.
+
 The structural checker recognizes frontmatter delimiters only on standalone lines, so inline hyphens in a description cannot hide duplicate metadata.
 
 

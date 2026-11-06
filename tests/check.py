@@ -88,7 +88,8 @@ def main():
     end = next((i for i, line in enumerate(lines) if line.rstrip() == "---"), None)
     if end is None:
         raise ValueError("missing YAML frontmatter")
-    fields = unique_object(line.split(":", 1) for line in "\n".join(lines[:end]).strip().splitlines())
+    pairs = (line.split(":", 1) for line in "\n".join(lines[:end]).strip().splitlines())
+    fields = unique_object((key.strip(), value) for key, value in pairs)
     if fields.get("name", "").strip() != "ras-memory":
         raise ValueError("name must be ras-memory")
     if not 1 <= len(fields.get("description", "").strip()) <= 1024:

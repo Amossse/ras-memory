@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The flat frontmatter checker trims field-name whitespace before detecting duplicates, accepting ordinary spacing and rejecting ambiguous names.
+
 - The structural checker recognizes frontmatter delimiters only on standalone lines, so inline hyphens in a description cannot hide duplicate metadata.
 
 - The report checker rejects terminal control characters in reasons and accepts ordinary Unicode, tabs and newlines.

@@ -18,6 +18,25 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_frontmatter_key_spacing_cannot_hide_duplicate_fields(self):
+        repository = Path(check.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tests").mkdir()
+            for name in ("check.py", "cases.json"):
+                shutil.copy2(repository / "tests" / name, root / "tests" / name)
+            skill = root / "SKILL.md"
+            command = [sys.executable, str(root / "tests/check.py")]
+            base = "---\nname: ras-memory\ndescription: Fictional example\n---\nBody\n"
+            invalid = base.replace("description:", "name : fictional-other\ndescription:")
+            skill.write_text(invalid, encoding="utf-8")
+            result = subprocess.run(command, capture_output=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertNotIn(b"Traceback", result.stderr)
+            skill.write_text(base.replace("name:", "name :").replace("description:", "description :"),
+                             encoding="utf-8")
+            subprocess.run(command, capture_output=True, check=True)
+
     def test_inline_hyphens_do_not_hide_duplicate_frontmatter_fields(self):
         repository = Path(check.__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as directory:
