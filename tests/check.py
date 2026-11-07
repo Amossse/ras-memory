@@ -88,6 +88,8 @@ def main():
     end = next((i for i, line in enumerate(lines) if line.rstrip() == "---"), None)
     if end is None:
         raise ValueError("missing YAML frontmatter")
+    if not "\n".join(lines[end + 1:]).strip():
+        raise ValueError("missing Skill instructions")
     pairs = (line.split(":", 1) for line in "\n".join(lines[:end]).strip().splitlines())
     fields = unique_object((key.strip(), value) for key, value in pairs)
     if fields.get("name", "").strip() != "ras-memory":

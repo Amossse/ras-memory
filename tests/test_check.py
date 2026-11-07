@@ -18,6 +18,27 @@ import check
 
 
 class CheckerDiagnostics(unittest.TestCase):
+    def test_frontmatter_without_instructions_is_not_a_valid_skill(self):
+        repository = Path(check.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tests").mkdir()
+            for name in ("check.py", "cases.json"):
+                shutil.copy2(repository / "tests" / name, root / "tests" / name)
+            skill = root / "SKILL.md"
+            frontmatter = "---\nname: ras-memory\ndescription: Fictional example\n---"
+            command = [sys.executable, str(root / "tests/check.py")]
+            for body in ("", "\n", "\n \t\n"):
+                raw = frontmatter + body
+                skill.write_text(raw, encoding="utf-8")
+                result = subprocess.run(command, capture_output=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertNotIn(b"Traceback", result.stderr)
+                self.assertNotIn(str(root).encode(), result.stderr)
+                self.assertEqual(skill.read_text(encoding="utf-8"), raw)
+            skill.write_text(frontmatter + "\nFictional instructions\n", encoding="utf-8")
+            subprocess.run(command, capture_output=True, check=True)
+
     def test_frontmatter_key_spacing_cannot_hide_duplicate_fields(self):
         repository = Path(check.__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as directory:

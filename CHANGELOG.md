@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The structural checker rejects frontmatter-only files and whitespace-only instruction bodies. A nonempty body is still not proof of policy completeness or model behavior.
+
 - The flat frontmatter checker trims field-name whitespace before detecting duplicates, accepting ordinary spacing and rejecting ambiguous names.
 
 - The structural checker recognizes frontmatter delimiters only on standalone lines, so inline hyphens in a description cannot hide duplicate metadata.

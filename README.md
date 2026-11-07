@@ -8,6 +8,8 @@ A portable Agent Skill for deciding **what to remember and what to recall**. Cap
 
 RAS-inspired attention is an engineering analogy, not neuroscience simulation. The reticular activating system is associated with arousal and attention, but attention and memory involve distributed systems. This project makes no brain-equivalence, health, or measured productivity claims. Background: [Robbins, 1997, Arousal systems and attentional processes](https://pubmed.ncbi.nlm.nih.gov/9083644/) and [RAS overview](https://www.ncbi.nlm.nih.gov/books/NBK549835/). These sources do not validate this Skill.
 
+The structural checker rejects frontmatter-only files and whitespace-only instruction bodies. A nonempty body is still not proof of policy completeness or model behavior.
+
 ## Install
 
 The Skill is the repository folder containing `SKILL.md`. It has no runtime dependencies, daemon, telemetry, API key, or built-in storage. It follows the [Agent Skills specification](https://agentskills.io/specification). Host discovery paths vary; compatibility is not a claim that every agent has been tested.
